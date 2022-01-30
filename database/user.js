@@ -11,7 +11,7 @@ mongoose.connect('mongodb://localhost/node-user-login',{
 
 const Schema=mongoose.Schema;
 
-const User=new Schema({
+const UserSchema=new Schema({
   username:{
       type:String, 
       required:true,
@@ -24,17 +24,20 @@ const User=new Schema({
 
 //passport-local automatically hashed and salts the passwords 
 
-User.plugin(passportLocalMongoose);
+UserSchema.plugin(passportLocalMongoose); // this particualar line of code encrypts the password. 
+
 
 // UserDetails.register({username:'candy' , active:false} , 'arogya');
+const User = module.exports=mongoose.model('userData' , UserSchema);
 
 module.exports.getUserByID=(id,callback) => { 
    User.findById(id,callback);
 }
 
 module.exports.addUser = function(newUser, callback){
-    
+    const user = new User(newUser);
+
+    user.save(callback);
 }
 
-module.exports=mongoose.model('userData' , User , 'userData');
 
